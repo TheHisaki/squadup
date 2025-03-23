@@ -1,0 +1,31 @@
+RewriteEngine On
+RewriteBase /
+
+# Rediriger vers HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Permettre l'accès aux fichiers et répertoires existants
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rediriger toutes les requêtes vers index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Activer la compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/xml
+</IfModule>
+
+# Définir les en-têtes de sécurité
+Header set X-Content-Type-Options "nosniff"
+Header set X-XSS-Protection "1; mode=block"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+# Permettre CORS pour les assets
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|gif|css|js)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule> 
