@@ -1280,20 +1280,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message'])) {
             const messageInput = document.getElementById('message-input');
 
             if (form && messageInput) {
-                // Gérer la soumission du formulaire et la touche Entrée dans une seule fonction
-                const handleSubmit = (e) => {
+                // Gérer la soumission du formulaire
+                form.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
                     sendMessage(e);
-                };
+                });
 
-                // Attacher les gestionnaires d'événements
-                form.addEventListener('submit', handleSubmit);
+                // Gérer l'envoi avec Entrée
                 messageInput.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        e.stopPropagation();
-                        handleSubmit(new Event('submit'));
+                        const event = new Event('submit', {
+                            bubbles: true,
+                            cancelable: true
+                        });
+                        form.dispatchEvent(event);
                     }
                 });
             }
