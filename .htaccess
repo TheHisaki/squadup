@@ -1,0 +1,63 @@
+# Protection contre l'accès direct aux fichiers PHP
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Protection des fichiers sensibles
+<FilesMatch "^(config\.php|database\.php|security\.php)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Protection contre les attaques communes
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header set Content-Security-Policy "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'"
+</IfModule>
+
+# Désactiver l'affichage du contenu des répertoires
+Options -Indexes
+
+# Activer le module de réécriture
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Protection des dossiers sensibles
+    RewriteRule ^config/.* - [F,L]
+    RewriteRule ^logs/.* - [F,L]
+</IfModule>
+
+# Redirection des erreurs
+ErrorDocument 404 /404.php
+ErrorDocument 403 /403.php
+ErrorDocument 500 /500.php
+
+# Configuration PHP
+<IfModule mod_php.c>
+    php_value upload_max_filesize 20M
+    php_value post_max_size 20M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
+</IfModule>
+
+# Protection des fichiers uploadés dans le dossier uploads
+<FilesMatch "^uploads/.*\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Configuration pour les images dans uploads/avatars
+<IfModule mod_rewrite.c>
+    RewriteRule ^uploads/avatars/.*\.(jpg|jpeg|png|gif)$ - [L]
+</IfModule>
+
+# Autoriser l'accès aux images dans uploads/avatars
+<FilesMatch "^uploads/avatars/.*\.(jpg|jpeg|png|gif)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch> 

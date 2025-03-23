@@ -1,0 +1,6 @@
+USE squadup;
+
+ALTER TABLE users
+ADD COLUMN language VARCHAR(10) DEFAULT 'fr' AFTER email,
+ADD COLUMN platform VARCHAR(50) DEFAULT NULL AFTER language,
+ADD COLUMN age INT DEFAULT NULL AFTER platform; 
