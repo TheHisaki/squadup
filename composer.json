@@ -1,0 +1,13 @@
+{
+    "name": "squadup/web",
+    "description": "Application de matchmaking pour gamers",
+    "type": "project",
+    "require": {
+        "php": "^8.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+} 
